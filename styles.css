@@ -284,6 +284,31 @@ dd { margin: 4px 0 0; }
 
 .summary-card div { padding: 12px 0; border-bottom: 1px solid var(--line); }
 .summary-card div:last-child { border-bottom: 0; }
+.admin-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr); gap: 24px; align-items: start; }
+.admin-panel {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--soft-shadow);
+}
+.admin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.admin-panel label { display: grid; gap: 6px; color: var(--navy); font-weight: 900; }
+.admin-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  color: #8a231c;
+  background: #ffe8e5;
+  border: 2px solid #e7a19a;
+  border-radius: 8px;
+  font-weight: 900;
+}
 .contact-layout { align-items: start; }
 .contact-form { display: grid; gap: 14px; }
 .contact-form label { display: grid; gap: 6px; color: var(--navy); font-weight: 900; }
@@ -316,14 +341,14 @@ textarea { resize: vertical; }
   .more-menu { grid-column: 1 / -1; }
   .more-menu summary { width: 100%; background: var(--gold-soft); }
   .more-menu div { position: static; min-width: 0; margin-top: 8px; box-shadow: none; }
-  .facts-band, .two-column, .document-section, .action-board { grid-template-columns: 1fr; }
+  .facts-band, .two-column, .document-section, .action-board, .admin-layout { grid-template-columns: 1fr; }
   .page-header, .site-footer { align-items: flex-start; flex-direction: column; }
 }
 @media (max-width: 620px) {
   body { font-size: 16px; }
   .brand strong { font-size: 0.96rem; }
   .brand small { font-size: 0.78rem; }
-  .main-nav.open, .facts-band, .card-grid, .card-grid.three, .gallery-grid, .document-grid { grid-template-columns: 1fr; }
+  .main-nav.open, .facts-band, .card-grid, .card-grid.three, .gallery-grid, .document-grid, .admin-grid { grid-template-columns: 1fr; }
   .hero { padding-top: 34px; min-height: 720px; }
   .hero::after { background: linear-gradient(90deg, rgba(7,25,48,0.96), rgba(7,25,48,0.74)), linear-gradient(0deg, rgba(7,25,48,0.82), rgba(7,25,48,0.12)); }
   .hero-status-grid { grid-template-columns: 1fr; }
