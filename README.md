@@ -10,10 +10,25 @@ Open `index.html` in a browser, or serve the folder with any static web server.
 
 - React single-page website using CDN React and Babel
 - Premium official homepage with parent-friendly dashboard
-- Pages for About, Academics, Admissions, Parents, Learners, Teachers, Announcements, Gallery, Contact and POPIA Privacy Notice
+- Pages for About, Academics, Admissions, Parents, Learners, Teachers, Announcements, Gallery, Contact, POPIA Privacy Notice and Admin / CMS
 - Mobile-friendly navigation
 - Safe SVG school illustration with no learner photos or private information
 - Placeholder sections for documents, notices and verified school management content
+- Browser-based Admin / CMS page for editing public contact details and announcements
+
+## Admin / CMS
+
+Open `#admin` from the website navigation, or go directly to `index.html#admin`.
+
+The CMS can:
+
+- Edit public school details such as phone numbers, email placeholder, principal placeholder and office hours
+- Edit announcements, one notice per line
+- Save changes in the current browser using local storage
+- Export a JSON backup
+- Import a previously exported JSON backup
+
+This is a static website CMS. Changes saved in the Admin / CMS page are stored only in the browser where they were edited. For all visitors online to see the same changes, the exported content must be published back into the website or connected later to a hosted CMS/database.
 
 ## Privacy
 
