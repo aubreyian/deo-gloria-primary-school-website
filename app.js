@@ -28,28 +28,49 @@ const pages = [
 const mainNav = ["home", "about", "academics", "admissions", "parents", "news", "contact"];
 const moreNav = ["learners", "teachers", "gallery", "privacy", "admin"];
 const values = ["Respect", "Discipline", "Responsibility", "Excellence", "Ubuntu", "Honesty", "Care"];
-const docs = ["Admission form", "Code of conduct", "School calendar", "Uniform list", "Stationery list", "POPIA consent form"];
+const defaultDocuments = [
+  { title: "Admission form", url: "#", status: "PDF" },
+  { title: "Code of conduct", url: "#", status: "PDF" },
+  { title: "School calendar", url: "#", status: "PDF" },
+  { title: "Uniform list", url: "#", status: "PDF" },
+  { title: "Stationery list", url: "#", status: "PDF" },
+  { title: "POPIA consent form", url: "#", status: "PDF" }
+];
 const defaultNotices = [
   "Important notices, assessment dates and parent meeting updates will appear here.",
   "Term opening and closing notices will be published after confirmation by school management.",
   "Emergency notices will be displayed clearly on this page and shared through official school channels."
 ];
 
+function normaliseDocuments(items) {
+  if (!Array.isArray(items) || !items.length) return defaultDocuments;
+  return items.map((item, index) => {
+    if (typeof item === "string") return { title: item, url: "#", status: "PDF" };
+    return {
+      title: item.title || defaultDocuments[index]?.title || "School document",
+      url: item.url || "#",
+      status: item.status || "PDF"
+    };
+  }).filter((item) => item.title);
+}
+
 function loadCmsContent() {
   try {
     const saved = JSON.parse(localStorage.getItem("deoGloriaCms") || "{}");
     return {
       school: { ...defaultSchool, ...(saved.school || {}) },
-      notices: Array.isArray(saved.notices) && saved.notices.length ? saved.notices : defaultNotices
+      notices: Array.isArray(saved.notices) && saved.notices.length ? saved.notices : defaultNotices,
+      documents: normaliseDocuments(saved.documents)
     };
   } catch {
-    return { school: defaultSchool, notices: defaultNotices };
+    return { school: defaultSchool, notices: defaultNotices, documents: defaultDocuments };
   }
 }
 
 const cmsContent = loadCmsContent();
 const school = cmsContent.school;
 const notices = cmsContent.notices;
+const documents = cmsContent.documents;
 
 function App() {
   const initial = window.location.hash.replace("#", "") || "home";
@@ -135,8 +156,109 @@ function QuickLinks({ go }) { return <section className="section"><Intro eyebrow
 function Cards({ items, three = false }) { return <div className={three ? "card-grid three" : "card-grid"}>{items.map((t) => <Card key={t} title={t}>Approved details and documents can be added by school management.</Card>)}</div>; }
 function ContactSummary() { return <div className="summary-card"><h3>{school.name}</h3><dl><Info label="EMIS" value={school.emis} /><Info label="Address" value={school.address} /><Info label="Alternative listed location" value={school.alternativeAddress} /><Info label="Telephone" value={school.phone} /><Info label="Alternative number" value={school.altPhone} /><Info label="Email" value={school.email} /><Info label="Principal" value={school.principal} /><Info label="Office hours" value={school.hours} /></dl></div>; }
 function ContactForm() { const [sent, setSent] = useState(false); return <form className="contact-form" onSubmit={(e) => { e.preventDefault(); setSent(true); }}><h2>Send an enquiry</h2><label>Name<input required /></label><label>Email<input type="email" required /></label><label>Phone number<input type="tel" /></label><label>Message<textarea rows="5" required></textarea></label><label className="check-row"><input type="checkbox" required /><span>I consent to Deo Gloria Primary School processing my personal information for the purpose of responding to my enquiry.</span></label><button className="primary-button" type="submit">Submit enquiry</button>{sent && <p className="form-success">Thank you. This demo form is ready for connection to the school's approved email system.</p>}</form>; }
-function Documents() { return <section className="document-section"><div><p className="eyebrow">Downloadable documents</p><h2>School documents placeholder</h2><p>Upload approved PDF documents here when they are confirmed by school management.</p></div><div className="document-grid">{docs.map((d) => <a key={d} href="#"><span>PDF</span>{d}</a>)}</div></section>; }
-function AdminPanel() { const [form, setForm] = useState({ ...school }); const [noticeText, setNoticeText] = useState(notices.join("\n")); const [importText, setImportText] = useState(""); const [message, setMessage] = useState(""); const fields = [["name", "School name"], ["slogan", "Slogan"], ["phone", "Telephone"], ["altPhone", "Alternative number"], ["email", "Email"], ["principal", "Principal"], ["address", "Address"], ["alternativeAddress", "Alternative listed location"], ["hours", "Office hours"]]; const update = (key, value) => setForm({ ...form, [key]: value }); const cleanNotices = () => noticeText.split("\n").map((item) => item.trim()).filter(Boolean); const content = () => ({ school: form, notices: cleanNotices().length ? cleanNotices() : defaultNotices }); function save(event) { event.preventDefault(); localStorage.setItem("deoGloriaCms", JSON.stringify(content())); setMessage("Saved on this browser. Refreshing the website now..."); setTimeout(() => window.location.reload(), 500); } function reset() { localStorage.removeItem("deoGloriaCms"); setMessage("CMS content reset. Refreshing the website now..."); setTimeout(() => window.location.reload(), 500); } function exportCms() { const blob = new Blob([JSON.stringify(content(), null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = "deo-gloria-primary-school-cms.json"; link.click(); URL.revokeObjectURL(url); } function importCms() { try { const imported = JSON.parse(importText); localStorage.setItem("deoGloriaCms", JSON.stringify({ school: { ...defaultSchool, ...(imported.school || {}) }, notices: Array.isArray(imported.notices) && imported.notices.length ? imported.notices : defaultNotices })); setMessage("Imported CMS backup. Refreshing the website now..."); setTimeout(() => window.location.reload(), 500); } catch { setMessage("Import failed. Please paste a valid CMS JSON backup."); } } return <section className="section admin-page"><Intro eyebrow="Admin / CMS" title="Edit school notices and public contact details." text="This static CMS saves changes in this browser. Use Export backup after editing so the content can be kept safely or sent for publishing." /><div className="admin-layout"><form className="admin-panel" onSubmit={save}><h2>School details</h2><div className="admin-grid">{fields.map(([key, label]) => <label key={key}>{label}<input value={form[key] || ""} onChange={(event) => update(key, event.target.value)} /></label>)}</div><label>Announcements, one per line<textarea rows="8" value={noticeText} onChange={(event) => setNoticeText(event.target.value)} /></label><div className="admin-actions"><button className="primary-button" type="submit">Save changes</button><button className="outline-button" type="button" onClick={exportCms}>Export backup</button><button className="danger-button" type="button" onClick={reset}>Reset local CMS</button></div>{message && <p className="form-success">{message}</p>}</form><aside className="admin-panel"><h2>Import backup</h2><p>Paste a previously exported CMS JSON backup here, then import it on this browser.</p><textarea rows="10" value={importText} onChange={(event) => setImportText(event.target.value)} placeholder='{"school": {...}, "notices": [...]}'></textarea><button className="primary-button" type="button" onClick={importCms}>Import backup</button><Panel title="Publishing note">For everyone online to see the same CMS edits, the saved content must later be connected to a hosted database or committed back to GitHub.</Panel></aside></div></section>; }
+function Documents() { return <section className="document-section"><div><p className="eyebrow">Downloadable documents</p><h2>School documents</h2><p>Approved PDF documents and links can be managed from the Admin / CMS page after confirmation by school management.</p></div><div className="document-grid">{documents.map((doc) => <a key={doc.title} href={doc.url || "#"} target={doc.url && doc.url !== "#" ? "_blank" : undefined} rel={doc.url && doc.url !== "#" ? "noreferrer" : undefined}><span>{doc.status || "PDF"}</span>{doc.title}</a>)}</div></section>; }
+function AdminPanel() {
+  const [form, setForm] = useState({ ...school });
+  const [noticeText, setNoticeText] = useState(notices.join("\n"));
+  const [documentsForm, setDocumentsForm] = useState(documents.map((doc) => ({ ...doc })));
+  const [importText, setImportText] = useState("");
+  const [message, setMessage] = useState("");
+  const fields = [["name", "School name"], ["slogan", "Slogan"], ["phone", "Telephone"], ["altPhone", "Alternative number"], ["email", "Email"], ["principal", "Principal"], ["address", "Address"], ["alternativeAddress", "Alternative listed location"], ["hours", "Office hours"]];
+  const update = (key, value) => setForm({ ...form, [key]: value });
+  const updateDocument = (index, key, value) => setDocumentsForm((current) => current.map((doc, itemIndex) => itemIndex === index ? { ...doc, [key]: value } : doc));
+  const cleanNotices = () => noticeText.split("\n").map((item) => item.trim()).filter(Boolean);
+  const cleanDocuments = () => documentsForm.map((doc) => ({ title: doc.title.trim(), url: doc.url.trim() || "#", status: doc.status || "PDF" })).filter((doc) => doc.title);
+  const content = () => ({ school: form, notices: cleanNotices().length ? cleanNotices() : defaultNotices, documents: cleanDocuments().length ? cleanDocuments() : defaultDocuments });
+
+  function attachDocument(index, event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      setMessage("Please choose a PDF file.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      updateDocument(index, "url", reader.result);
+      updateDocument(index, "status", "PDF");
+      setMessage("PDF attached for this browser. Click Save changes to store it locally.");
+    };
+    reader.onerror = () => setMessage("The PDF could not be attached. Try a smaller file or use a link/path.");
+    reader.readAsDataURL(file);
+  }
+
+  function save(event) {
+    event.preventDefault();
+    localStorage.setItem("deoGloriaCms", JSON.stringify(content()));
+    setMessage("Saved on this browser. Refreshing the website now...");
+    setTimeout(() => window.location.reload(), 500);
+  }
+
+  function reset() {
+    localStorage.removeItem("deoGloriaCms");
+    setMessage("CMS content reset. Refreshing the website now...");
+    setTimeout(() => window.location.reload(), 500);
+  }
+
+  function exportCms() {
+    const blob = new Blob([JSON.stringify(content(), null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "deo-gloria-primary-school-cms.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importCms() {
+    try {
+      const imported = JSON.parse(importText);
+      localStorage.setItem("deoGloriaCms", JSON.stringify({
+        school: { ...defaultSchool, ...(imported.school || {}) },
+        notices: Array.isArray(imported.notices) && imported.notices.length ? imported.notices : defaultNotices,
+        documents: normaliseDocuments(imported.documents)
+      }));
+      setMessage("Imported CMS backup. Refreshing the website now...");
+      setTimeout(() => window.location.reload(), 500);
+    } catch {
+      setMessage("Import failed. Please paste a valid CMS JSON backup.");
+    }
+  }
+
+  return (
+    <section className="section admin-page">
+      <Intro eyebrow="Admin / CMS" title="Edit school notices and public contact details." text="This static CMS saves changes in this browser. Use Export backup after editing so the content can be kept safely or sent for publishing." />
+      <div className="admin-layout">
+        <form className="admin-panel" onSubmit={save}>
+          <h2>School details</h2>
+          <div className="admin-grid">{fields.map(([key, label]) => <label key={key}>{label}<input value={form[key] || ""} onChange={(event) => update(key, event.target.value)} /></label>)}</div>
+          <label>Announcements, one per line<textarea rows="8" value={noticeText} onChange={(event) => setNoticeText(event.target.value)} /></label>
+          <section className="admin-documents">
+            <div>
+              <h2>Downloadable documents</h2>
+              <p>Add approved PDF links or paths. For example: assets/documents/admission-form.pdf. Small PDFs can also be attached for this browser only.</p>
+            </div>
+            {documentsForm.map((doc, index) => <div className="document-editor" key={`${doc.title}-${index}`}>
+              <label>Document name<input value={doc.title} onChange={(event) => updateDocument(index, "title", event.target.value)} /></label>
+              <label>PDF link or file path<input value={doc.url} onChange={(event) => updateDocument(index, "url", event.target.value)} placeholder="assets/documents/admission-form.pdf" /></label>
+              <label className="file-field">Attach PDF for this browser<input type="file" accept="application/pdf" onChange={(event) => attachDocument(index, event)} /></label>
+            </div>)}
+            <Panel title="Where documents are published">For the public website, approved PDFs must be uploaded to the website files or hosted through an approved school link. This browser CMS can prepare the document names and links.</Panel>
+          </section>
+          <div className="admin-actions"><button className="primary-button" type="submit">Save changes</button><button className="outline-button" type="button" onClick={exportCms}>Export backup</button><button className="danger-button" type="button" onClick={reset}>Reset local CMS</button></div>
+          {message && <p className="form-success">{message}</p>}
+        </form>
+        <aside className="admin-panel">
+          <h2>Import backup</h2>
+          <p>Paste a previously exported CMS JSON backup here, then import it on this browser.</p>
+          <textarea rows="10" value={importText} onChange={(event) => setImportText(event.target.value)} placeholder='{"school": {...}, "notices": [...], "documents": [...]}'></textarea>
+          <button className="primary-button" type="button" onClick={importCms}>Import backup</button>
+          <Panel title="Publishing note">For everyone online to see the same CMS edits, the saved content must later be connected to a hosted database or committed back to GitHub.</Panel>
+        </aside>
+      </div>
+    </section>
+  );
+}
 function Intro({ eyebrow, title, text }) { return <div className="section-intro"><p className="eyebrow">{eyebrow}</p><h2>{title}</h2>{text && <p>{text}</p>}</div>; }
 function Card({ title, children }) { return <article className="page-card"><h3>{title}</h3><p>{children}</p></article>; }
 function Panel({ title, children }) { return <article className="info-panel"><h3>{title}</h3><p>{children}</p></article>; }
