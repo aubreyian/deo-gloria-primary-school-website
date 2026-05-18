@@ -1,6 +1,6 @@
 const { useMemo, useState } = React;
 
-const school = {
+const defaultSchool = {
   name: "Deo Gloria Primary School",
   emis: "909130154",
   type: "Public Ordinary Primary School",
@@ -23,17 +23,33 @@ const school = {
 const pages = [
   ["home", "Home"], ["about", "About Us"], ["academics", "Academics"], ["admissions", "Admissions"],
   ["parents", "Parents"], ["learners", "Learners"], ["teachers", "Teachers"], ["news", "Announcements"],
-  ["gallery", "Gallery"], ["contact", "Contact Us"], ["privacy", "Privacy Notice"]
+  ["gallery", "Gallery"], ["contact", "Contact Us"], ["privacy", "Privacy Notice"], ["admin", "Admin"]
 ];
 const mainNav = ["home", "about", "academics", "admissions", "parents", "news", "contact"];
-const moreNav = ["learners", "teachers", "gallery", "privacy"];
+const moreNav = ["learners", "teachers", "gallery", "privacy", "admin"];
 const values = ["Respect", "Discipline", "Responsibility", "Excellence", "Ubuntu", "Honesty", "Care"];
 const docs = ["Admission form", "Code of conduct", "School calendar", "Uniform list", "Stationery list", "POPIA consent form"];
-const notices = [
+const defaultNotices = [
   "Important notices, assessment dates and parent meeting updates will appear here.",
   "Term opening and closing notices will be published after confirmation by school management.",
   "Emergency notices will be displayed clearly on this page and shared through official school channels."
 ];
+
+function loadCmsContent() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("deoGloriaCms") || "{}");
+    return {
+      school: { ...defaultSchool, ...(saved.school || {}) },
+      notices: Array.isArray(saved.notices) && saved.notices.length ? saved.notices : defaultNotices
+    };
+  } catch {
+    return { school: defaultSchool, notices: defaultNotices };
+  }
+}
+
+const cmsContent = loadCmsContent();
+const school = cmsContent.school;
+const notices = cmsContent.notices;
 
 function App() {
   const initial = window.location.hash.replace("#", "") || "home";
@@ -108,10 +124,11 @@ function Content({ page }) {
   if (page === "news") return <section className="section"><Intro eyebrow="Announcements / News" title="Latest school notices and community updates." /><div className="notice-list">{notices.map((n, i) => <article className="notice-card" key={n}><span>Notice {i + 1}</span><p>{n}</p></article>)}</div><List compact title="Notice categories" items={["Latest school notices", "Events", "Assessment dates", "Departmental circulars", "Sports and cultural activities", "Parent meeting reminders", "Term opening and closing notices", "Emergency notices"]} /></section>;
   if (page === "gallery") return <section className="section"><Intro eyebrow="Gallery" title="Approved school moments and activities." /><Panel title="Photo publishing warning">Only approved photos with written parental consent may be published. Do not use real learner photos unless approved by school management and parents/guardians.</Panel><div className="gallery-grid">{["Events", "Awards", "Sports", "Classroom Activities", "Community Projects"].map((x) => <article className="gallery-card" key={x}><div className="placeholder-art"><span></span></div><h3>{x}</h3><p>Safe placeholder image area. Approved school photos can be added later.</p></article>)}</div></section>;
   if (page === "contact") return <section className="section"><div className="two-column contact-layout"><div><Intro eyebrow="Contact Us" title="Speak to the school office." /><ContactSummary /><div className="map-placeholder">Google Maps placeholder</div></div><ContactForm /></div></section>;
+  if (page === "admin") return <AdminPanel />;
   return <section className="section privacy-page"><Intro eyebrow="POPIA Privacy Notice" title="Protecting personal information at school." /><p>Deo Gloria Primary School processes personal information in line with the Protection of Personal Information Act (POPIA). The school collects personal information only for school administration, admissions, communication and learner support.</p><div className="card-grid"><Card title="Children's information">Children's personal information must be protected carefully and processed only for lawful school purposes.</Card><Card title="Photos and names">Learner photos and names may only be published with proper consent from a parent, guardian or authorised person.</Card><Card title="Correction requests">Parents/guardians may contact the school to update or correct personal information.</Card><Card title="Contact forms">The website contact form must not ask for unnecessary personal information.</Card></div><Panel title="Important privacy instruction">Do not publish learner photos, learner names, ID numbers, reports, medical information, addresses, or private information unless written consent is given by the parent/guardian or authorised person.</Panel></section>;
 }
 
-function Notice() { return <section className="notice-strip"><strong>Announcement:</strong><span>Important notices, assessment dates and parent meeting updates will appear here.</span></section>; }
+function Notice() { return <section className="notice-strip"><strong>Announcement:</strong><span>{notices[0]}</span></section>; }
 function Facts() { return <section className="facts-band"><Fact label="EMIS" value={school.emis} /><Fact label="Grades" value={school.grades} /><Fact label="Status" value={school.status} /><Fact label="District" value={school.district} /></section>; }
 function OfficialCard() { return <article className="official-card"><p className="eyebrow">Official profile</p><h2>Verified and to-confirm details</h2><dl><Info label="School profile" value={`${school.type} | ${school.phase}`} /><Info label="Location" value={school.location} /><Info label="Address to verify" value={school.address} /><Info label="Email" value={school.email} /></dl></article>; }
 function QuickLinks({ go }) { return <section className="section"><Intro eyebrow="Quick links" title="Helpful information for every school stakeholder." text="Choose the area you need. The school can replace placeholders with approved documents and official updates." /><div className="card-grid">{[["Parents", "Calendar, notices, conduct and communication rules", "parents"], ["Learners", "Homework support, school rules and wellbeing", "learners"], ["Teachers", "CAPS resources, assessment plans and internal notices", "teachers"], ["School Documents", "Admission forms, policies and consent forms", "admissions"]].map(([t, x, target]) => <button className="link-card" key={t} onClick={() => go(target)}><span className="card-icon">{t[0]}</span><strong>{t}</strong><small>{x}</small></button>)}</div></section>; }
@@ -119,6 +136,7 @@ function Cards({ items, three = false }) { return <div className={three ? "card-
 function ContactSummary() { return <div className="summary-card"><h3>{school.name}</h3><dl><Info label="EMIS" value={school.emis} /><Info label="Address" value={school.address} /><Info label="Alternative listed location" value={school.alternativeAddress} /><Info label="Telephone" value={school.phone} /><Info label="Alternative number" value={school.altPhone} /><Info label="Email" value={school.email} /><Info label="Principal" value={school.principal} /><Info label="Office hours" value={school.hours} /></dl></div>; }
 function ContactForm() { const [sent, setSent] = useState(false); return <form className="contact-form" onSubmit={(e) => { e.preventDefault(); setSent(true); }}><h2>Send an enquiry</h2><label>Name<input required /></label><label>Email<input type="email" required /></label><label>Phone number<input type="tel" /></label><label>Message<textarea rows="5" required></textarea></label><label className="check-row"><input type="checkbox" required /><span>I consent to Deo Gloria Primary School processing my personal information for the purpose of responding to my enquiry.</span></label><button className="primary-button" type="submit">Submit enquiry</button>{sent && <p className="form-success">Thank you. This demo form is ready for connection to the school's approved email system.</p>}</form>; }
 function Documents() { return <section className="document-section"><div><p className="eyebrow">Downloadable documents</p><h2>School documents placeholder</h2><p>Upload approved PDF documents here when they are confirmed by school management.</p></div><div className="document-grid">{docs.map((d) => <a key={d} href="#"><span>PDF</span>{d}</a>)}</div></section>; }
+function AdminPanel() { const [form, setForm] = useState({ ...school }); const [noticeText, setNoticeText] = useState(notices.join("\n")); const [importText, setImportText] = useState(""); const [message, setMessage] = useState(""); const fields = [["name", "School name"], ["slogan", "Slogan"], ["phone", "Telephone"], ["altPhone", "Alternative number"], ["email", "Email"], ["principal", "Principal"], ["address", "Address"], ["alternativeAddress", "Alternative listed location"], ["hours", "Office hours"]]; const update = (key, value) => setForm({ ...form, [key]: value }); const cleanNotices = () => noticeText.split("\n").map((item) => item.trim()).filter(Boolean); const content = () => ({ school: form, notices: cleanNotices().length ? cleanNotices() : defaultNotices }); function save(event) { event.preventDefault(); localStorage.setItem("deoGloriaCms", JSON.stringify(content())); setMessage("Saved on this browser. Refreshing the website now..."); setTimeout(() => window.location.reload(), 500); } function reset() { localStorage.removeItem("deoGloriaCms"); setMessage("CMS content reset. Refreshing the website now..."); setTimeout(() => window.location.reload(), 500); } function exportCms() { const blob = new Blob([JSON.stringify(content(), null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = "deo-gloria-primary-school-cms.json"; link.click(); URL.revokeObjectURL(url); } function importCms() { try { const imported = JSON.parse(importText); localStorage.setItem("deoGloriaCms", JSON.stringify({ school: { ...defaultSchool, ...(imported.school || {}) }, notices: Array.isArray(imported.notices) && imported.notices.length ? imported.notices : defaultNotices })); setMessage("Imported CMS backup. Refreshing the website now..."); setTimeout(() => window.location.reload(), 500); } catch { setMessage("Import failed. Please paste a valid CMS JSON backup."); } } return <section className="section admin-page"><Intro eyebrow="Admin / CMS" title="Edit school notices and public contact details." text="This static CMS saves changes in this browser. Use Export backup after editing so the content can be kept safely or sent for publishing." /><div className="admin-layout"><form className="admin-panel" onSubmit={save}><h2>School details</h2><div className="admin-grid">{fields.map(([key, label]) => <label key={key}>{label}<input value={form[key] || ""} onChange={(event) => update(key, event.target.value)} /></label>)}</div><label>Announcements, one per line<textarea rows="8" value={noticeText} onChange={(event) => setNoticeText(event.target.value)} /></label><div className="admin-actions"><button className="primary-button" type="submit">Save changes</button><button className="outline-button" type="button" onClick={exportCms}>Export backup</button><button className="danger-button" type="button" onClick={reset}>Reset local CMS</button></div>{message && <p className="form-success">{message}</p>}</form><aside className="admin-panel"><h2>Import backup</h2><p>Paste a previously exported CMS JSON backup here, then import it on this browser.</p><textarea rows="10" value={importText} onChange={(event) => setImportText(event.target.value)} placeholder='{"school": {...}, "notices": [...]}'></textarea><button className="primary-button" type="button" onClick={importCms}>Import backup</button><Panel title="Publishing note">For everyone online to see the same CMS edits, the saved content must later be connected to a hosted database or committed back to GitHub.</Panel></aside></div></section>; }
 function Intro({ eyebrow, title, text }) { return <div className="section-intro"><p className="eyebrow">{eyebrow}</p><h2>{title}</h2>{text && <p>{text}</p>}</div>; }
 function Card({ title, children }) { return <article className="page-card"><h3>{title}</h3><p>{children}</p></article>; }
 function Panel({ title, children }) { return <article className="info-panel"><h3>{title}</h3><p>{children}</p></article>; }
