@@ -14,7 +14,7 @@ Open `index.html` in a browser, or serve the folder with any static web server.
 - Mobile-friendly navigation
 - Safe SVG school illustration with no learner photos or private information
 - Placeholder sections for documents, notices and verified school management content
-- Browser-based Admin / CMS page for editing public contact details and announcements
+- Browser-based Admin / CMS page for editing public contact details, announcements and document links
 
 ## Admin / CMS
 
@@ -24,6 +24,7 @@ The CMS can:
 
 - Edit public school details such as phone numbers, email placeholder, principal placeholder and office hours
 - Edit announcements, one notice per line
+- Manage downloadable document names and approved PDF links or file paths
 - Save changes in the current browser using local storage
 - Export a JSON backup
 - Import a previously exported JSON backup
