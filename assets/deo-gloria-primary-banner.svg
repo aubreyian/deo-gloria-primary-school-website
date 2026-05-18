@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Deo Gloria Primary School safe illustration</title>
+  <desc id="desc">An original, non-photographic illustration of a South African public primary school campus with books, trees and a warm sky.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#eef6ff"/>
+      <stop offset="0.56" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#fff3cf"/>
+    </linearGradient>
+    <linearGradient id="navy" x1="0" x2="1">
+      <stop offset="0" stop-color="#102f55"/>
+      <stop offset="1" stop-color="#174875"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#102f55" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1270" cy="170" r="96" fill="#d6a11f" opacity="0.86"/>
+  <path d="M0 690 C260 620 420 760 665 690 C915 618 1080 648 1285 704 C1420 742 1510 726 1600 690 L1600 900 L0 900 Z" fill="#dce8f1"/>
+  <path d="M0 740 C238 704 395 810 620 746 C838 684 1040 698 1260 770 C1420 824 1518 808 1600 760 L1600 900 L0 900 Z" fill="#cbdde9"/>
+  <g opacity="0.24" fill="#102f55">
+    <path d="M88 180h188v28H88zM88 235h270v18H88zM88 277h226v18H88z"/>
+    <path d="M1225 520h230v20h-230zM1225 560h180v20h-180zM1225 600h248v20h-248z"/>
+  </g>
+  <g transform="translate(475 255)" filter="url(#shadow)">
+    <path d="M62 225h610v300H62z" fill="#ffffff"/>
+    <path d="M20 205 366 35l350 170v52H20z" fill="url(#navy)"/>
+    <path d="M82 254h570v242H82z" fill="#f6f9fc"/>
+    <path d="M142 298h96v78h-96zM282 298h96v78h-96zM422 298h96v78h-96zM562 298h52v78h-52z" fill="#cfe0ed"/>
+    <path d="M306 408h122v88H306z" fill="#102f55"/>
+    <path d="M326 428h82v68h-82z" fill="#174875"/>
+    <path d="M62 510h610v38H62z" fill="#d6a11f"/>
+    <path d="M316 155h104v50H316z" fill="#ffffff" opacity="0.92"/>
+    <path d="M335 171h66v18h-66z" fill="#d6a11f"/>
+  </g>
+  <g transform="translate(265 520)">
+    <rect x="0" y="116" width="190" height="116" rx="20" fill="#102f55"/>
+    <rect x="38" y="78" width="182" height="116" rx="20" fill="#d6a11f"/>
+    <rect x="76" y="40" width="190" height="116" rx="20" fill="#ffffff"/>
+    <path d="M106 78h116M106 110h88" stroke="#102f55" stroke-width="14" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(1180 485)">
+    <path d="M120 210c72 0 130-57 130-128 0-53-32-98-78-118 4-14 6-28 6-42 0-78-63-142-142-142S-106-156-106-78c0 15 2 29 6 42-46 20-78 65-78 118 0 71 58 128 130 128z" fill="#2f7d59"/>
+    <path d="M38 122h58v230H38z" fill="#815b35"/>
+    <path d="M67 207c-45-52-78-94-112-164M67 194c46-55 86-104 122-174" stroke="#1f5f43" stroke-width="18" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(1080 668)">
+    <rect x="0" y="0" width="330" height="44" rx="22" fill="#102f55"/>
+    <circle cx="44" cy="22" r="10" fill="#d6a11f"/>
+    <circle cx="88" cy="22" r="10" fill="#d6a11f"/>
+    <circle cx="132" cy="22" r="10" fill="#d6a11f"/>
+  </g>
+  <g transform="translate(300 185)" opacity="0.9">
+    <rect x="0" y="0" width="160" height="46" rx="23" fill="#ffffff"/>
+    <path d="M34 23h92" stroke="#d6a11f" stroke-width="10" stroke-linecap="round"/>
+  </g>
+</svg>
