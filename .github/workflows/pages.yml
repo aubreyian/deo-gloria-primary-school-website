@@ -36,3 +36,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Deployment marker
+        run: echo "Ysterberg gallery deployment 2026-05-26"
