@@ -1,50 +1,45 @@
-# Deo Gloria Primary School Website
+# Ysterberg Public Primary School Website
 
-Official-style public school website for Deo Gloria Primary School, EMIS 909130154.
+Official-style public school website for Ysterberg Public Primary School, EMIS 909132013.
 
-## Live website
+Live site: https://aubreyian.github.io/deo-gloria-primary-school-website/
 
-GitHub Pages deployment target:
+## Included
 
-https://aubreyian.github.io/deo-gloria-primary-school-website/
-
-## Open locally
-
-Open `index.html` in a browser, or serve the folder with any static web server.
-
-## What is included
-
-- React single-page website using CDN React and Babel
-- Premium official homepage with parent-friendly dashboard
-- Pages for About, Academics, Admissions, Parents, Learners, Teachers, Announcements, Gallery, Contact, POPIA Privacy Notice and Admin / CMS
-- Mobile-friendly navigation
-- Safe SVG school illustration with no learner photos or private information
-- Password-protected Admin / CMS dashboard for announcements, calendar events, enquiries, documents, FAQs and website settings
-- Backend-ready local data structure using browser storage until a database or school system is connected
-- GitHub Pages deployment workflow
+- Permanent Ysterberg school profile details
+- Mobile-friendly React single-page website
+- Home, About Us, Academics, Subjects, Learners, Parents, Staff Portal, Governance, Gallery, Contact, Privacy and Admin / CMS pages
+- Admin / CMS for notices, events, documents, FAQs and enquiries
+- POPIA privacy language for school forms and learner images
+- Google Sheets CMS template support
+- Image gallery system with optional Unsplash and Pexels search
+- Local fallback SVG images and AI-style placeholder mode
 
 ## Admin / CMS
 
-Open `#admin` from the website navigation, or go directly to `index.html#admin`.
+Open `#admin` from the website navigation.
 
-The CMS can:
+Temporary demo password: `Ysterberg@2026`
 
-- Edit public school details such as phone numbers, email placeholder, principal placeholder and office hours
-- Add, edit and delete announcements with date, category, audience and urgency
-- Add and manage calendar events
-- Review admissions enquiries and contact messages
-- Mark enquiries as New, In progress or Resolved
-- Manage downloadable document names and approved PDF links or file paths
-- Manage public FAQs
-- Search and filter admin records so staff can find notices, events, enquiries, documents and FAQs quickly
-- Confirm before deleting announcements, calendar events, documents or FAQs
-- Show validation messages when required information is missing or contact details are not valid
-- Automatically refresh homepage notice, event, document and contact-detail sections after saved CMS updates
-- Save changes in the current browser using local storage
+## Google Sheets CMS
 
-Temporary local demo password: `DeoGloria@2026`.
+CMS spreadsheet:
+https://docs.google.com/spreadsheets/d/13mpsSoVSLcVda8ey0vWtN7zX3JraPNtAe6NBqrBGj3k
 
-This is a static website CMS. Changes saved in the Admin / CMS page are stored only in the browser where they were edited. For all visitors online to see the same changes, the site must be connected later to a hosted database, Google Sheets, Firebase, Supabase or an approved school admin system. Before public launch, replace the demo login with real server-side authentication.
+To connect it officially, paste `google-apps-script/Code.gs` into Apps Script in the Sheet, set a private `ADMIN_TOKEN`, deploy as a Web App, and add the Web App URL/token in the Admin settings.
+
+## Image APIs
+
+The public site includes `image-config.js`:
+
+```js
+window.YSTERBERG_IMAGE_CONFIG = {
+  UNSPLASH_KEY: "",
+  PEXELS_KEY: ""
+};
+```
+
+Leave keys blank for local fallback placeholders. Add provider keys only if the school accepts that browser-side keys are visible to visitors.
 
 ## Privacy
 
